@@ -1,0 +1,45 @@
+{% extends "main.html" %}
+
+{% block header %}
+<title>Data Format</title>
+<style>
+#main {
+    width: 600px;
+}
+
+/*body {
+    padding-top: 60px;
+}*/
+
+.text-error{
+    font-size: 20px;
+}
+
+</style>
+{% end %}
+
+{% block content %}
+<div class="container" id="main">
+    <h2><p class="text-info">Type</p></h2>
+    <p>
+        <h4>the data you upload is created by matlab or scipy.io.savemat() in Python,normally as <code>xxx.mat</code></h4></p>
+    <h2><p class="text-info">Format</p></h2>
+    <p>
+        <h4>including <code>x_tr</code>,<code>y_tr</code>,<code>x_te</code>,<code>y_te</code>,<code>te_location</code>,such as 
+    	<p><pre class="prettyprint Lang-py">scipy.io.savemat("all_data.mat", {"x_tr": x_tr, "y_tr": y_tr, "x_te": x_te, "y_te": y_te,"te_location":te_location})</pre></h4></p>
+    </p>
+    <h2><p class="text-info">Detail</p></h2>
+    <p>
+        <h4><code>x_tr</code>: features of training data,an array of [0..count of training data,0..count of feature]</h4>
+        <h4><code>y_tr</code>: label of training data,an array of [0..count of training data],and the labels should be <em><strong>numbers</strong></em></h4>
+        <h4><code>x_te</code>: features of testing data,an array of [0..count of testing data,0..count of feature]</h4>
+        <h4><code>y_te</code>: label of testing data,an array of [0..count of training data],and the labels should be <em><strong>numbers</strong></em></h4>
+        <h4><code>te_location</code>: location of testing pixel for drawing scatter map,an array of [0..count of testing data,[x_position,y_position]]</h4>
+    </p>
+</div>
+{% end %}
+
+{% block script %}
+<script type="text/javascript">
+</script>
+{% end %}

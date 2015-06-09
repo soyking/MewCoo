@@ -1,0 +1,404 @@
+{% extends "main.html" %}
+
+{% block header %}
+<title>Show Statistical Feature</title>
+<style>
+#main {
+    width: 800px;
+}
+
+/*body {
+    padding-top: 80px;
+}*/
+
+.result{
+    font-size: 20px;
+}
+
+#charts{
+    padding-top: 10px;
+}
+
+.anchor {
+   padding-top: 100px;
+}
+</style>
+{% end %}
+
+{% block content %}
+<div class="container" id="main">
+    <h2><p class="text-info"><a href="#ave">Average</a>&nbsp;|&nbsp;<a href="#var">Variance</a>&nbsp;|&nbsp;<a href="#y_count">Label Count</a>&nbsp;|&nbsp;<a href="#loc">Spacial Distribution</a></p><hr></h2>
+    <div id="charts">
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    <a id="ave" class="anchor"></a>
+    <div id="ave_chart" style="height:600px;position:relative;padding-top:50px"></div>
+    <a id="var" class="anchor"></a>
+    <div id="var_chart" style="height:600px;position:relative;padding-top:50px"></div>
+    <a id="y_count" class="anchor"></a>
+    <div id="label_count" style="height:600px;position:relative;padding-top:50px"></div>
+    <a id="loc" class="anchor"></a>
+    <div id="location" style="height:600px;position:relative;padding-top:50px"></div>
+    </div>
+    <!-- ECharts单文件引入 -->
+    <script src="{{ static_url("echarts/build/dist/echarts.js") }}"></script>
+    <script type="text/javascript">
+    // 路径配置
+    require.config({
+        paths: {
+            echarts: '{{ static_url("echarts/build/dist") }}'
+        }
+    });
+
+    // 使用
+    require(
+        [
+            'echarts',
+            'echarts/chart/line', // 使用柱状图就加载bar模块，按需加载
+            'echarts/chart/bar'
+        ],
+        function(ec) {
+            // 基于准备好的dom，初始化echarts图表
+            var myChart = ec.init(document.getElementById('ave_chart'));
+
+            var option = {
+                title: {
+                    text: "Average of Each Feature"
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                toolbox: {
+                    show: true,
+                    feature: {
+                        mark: {
+                            show: true
+                        },
+                        dataView: {
+                            show: true,
+                            readOnly: false
+                        },
+                        magicType: {
+                            show: true,
+                            type: ['line', 'bar']
+                        },
+                        restore: {
+                            show: true
+                        },
+                        saveAsImage: {
+                            show: true
+                        }
+                    }
+                },
+                calculable: true,
+                xAxis: [{
+                    type: 'category',
+                    boundaryGap: false,
+                    data: {{ [i + 1 for i in range(len(ave))] }} 
+                }],
+                yAxis: [{
+                    type: 'value',
+                    axisLabel: {
+                        formatter: '{value} '
+                    },
+                    max: {{ max(ave) * 1.1}}
+                }],
+                series: [{
+                    name: '特征平均值',
+                    type: 'line',
+                    data: {{ ave }},
+                    markPoint: {
+                        data: [{
+                            type: 'max',
+                            name: '最大值'
+                        }, {
+                            type: 'min',
+                            name: '最小值'
+                        }]
+                    },
+                }]
+            };
+
+            // 为echarts对象加载数据 
+            myChart.setOption(option);
+        }
+    );
+    </script>
+
+    <script type="text/javascript">
+    // 路径配置
+    require.config({
+        paths: {
+            echarts: '{{ static_url("echarts/build/dist") }}'
+        }
+    });
+
+    // 使用
+    require(
+        [
+            'echarts',
+            'echarts/chart/line', // 使用柱状图就加载bar模块，按需加载
+            'echarts/chart/bar'
+        ],
+        function(ec) {
+            // 基于准备好的dom，初始化echarts图表
+            var myChart = ec.init(document.getElementById('var_chart'));
+
+            var option = {
+                title: {
+                    text: 'Variance of Each Feature'
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                toolbox: {
+                    show: true,
+                    feature: {
+                        mark: {
+                            show: true
+                        },
+                        dataView: {
+                            show: true,
+                            readOnly: false
+                        },
+                        magicType: {
+                            show: true,
+                            type: ['line', 'bar']
+                        },
+                        restore: {
+                            show: true
+                        },
+                        saveAsImage: {
+                            show: true
+                        }
+                    }
+                },
+                calculable: true,
+                xAxis: [{
+                    type: 'category',
+                    boundaryGap: false,
+                    data: {{ [i + 1 for i in range(len(var))] }}
+                }],
+                yAxis: [{
+                    type: 'value',
+                    axisLabel: {
+                        formatter: '{value} '
+                    },
+                    max: {{ max(var) * 1.1 }}
+                }],
+                series: [{
+                    name: '特征方差',
+                    type: 'line',
+                    data: {{ var }},
+                    markPoint: {
+                        data: [{
+                            type: 'max',
+                            name: '最大值'
+                        }, {
+                            type: 'min',
+                            name: '最小值'
+                        }]
+                    }
+                }]
+            };
+
+            // 为echarts对象加载数据 
+            myChart.setOption(option);
+        }
+    );
+    </script>
+
+    <script type="text/javascript">
+    // 路径配置
+    require.config({
+        paths: {
+            echarts: '{{ static_url("echarts/build/dist") }}'
+        }
+    });
+
+    // 使用
+    require(
+        [
+            'echarts',
+            'echarts/chart/line', // 使用柱状图就加载bar模块，按需加载
+            'echarts/chart/bar'
+        ],
+        function(ec) {
+            // 基于准备好的dom，初始化echarts图表
+            var myChart = ec.init(document.getElementById('label_count'));
+
+            var option = {
+                title : {
+                    text: 'Count of Label'
+                },
+                tooltip : {
+                    trigger: 'axis'
+                },
+                toolbox: {
+                    show : true,
+                    feature : {
+                        mark : {show: true},
+                        dataView : {show: true, readOnly: false},
+                        magicType: {show: true, type: ['line', 'bar']},
+                        restore : {show: true},
+                        saveAsImage : {show: true}
+                    }
+                },
+                calculable : true,
+                xAxis : [
+                    {
+                        type : 'value',
+                        boundaryGap : [0, 0.01],
+                        axisLabel : {
+                            formatter: '{value} %'
+                        }
+                    }
+                ],
+                yAxis : [
+                    {
+                        type : 'category',
+                        data : {{ [i[0] for i in y_count] }}
+                    }
+                ],
+                series : [
+                    {
+                        name:'像素数量',
+                        type:'bar',
+                        data:{{ [i[1] for i in y_count] }},
+                        markPoint: {
+                            data: [{
+                                type: 'max',
+                                name: '最大值'
+                            }, {
+                                type: 'min',
+                                name: '最小值'
+                            }],
+                            itemStyle:{
+                                normal:{
+                                    color:'#337ab7'
+                                }
+                            }
+                        },
+                        itemStyle:{
+                            normal:{
+                                label:{
+                                    show:true
+                                }
+                            }
+                        }
+                    }
+                ],
+
+            };
+
+            // 为echarts对象加载数据 
+            myChart.setOption(option);
+        }
+    );
+    </script>
+
+    <script type="text/javascript">
+    // 路径配置
+    require.config({
+        paths: {
+            echarts: '{{ static_url("echarts/build/dist") }}'
+        }
+    });
+
+    // 使用
+    require(
+        [
+            'echarts',
+            'echarts/chart/line', // 使用柱状图就加载bar模块，按需加载
+            'echarts/chart/bar',
+            'echarts/chart/scatter'
+        ],
+        function(ec) {
+            // 基于准备好的dom，初始化echarts图表
+            var myChart = ec.init(document.getElementById('location'));
+
+            var option = {
+    title : {
+        text: 'Spacial Distribution'
+    },
+    tooltip : {
+        trigger: 'axis',
+        showDelay : 0,
+        axisPointer:{
+            show: true,
+            type : 'cross',
+            lineStyle: {
+                type : 'dashed',
+                width : 1
+            }
+        }
+    },
+    toolbox: {
+        show : true,
+        feature : {
+            mark : {show: true},
+            dataZoom : {show: true},
+            dataView : {show: true, readOnly: false},
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+    }, 
+    legend: {
+        x:'center',
+        data:[
+            {% for i in range(0,len(uniq_ele),8) %}
+            {{ str(uniq_ele[i:i+8])[1:-1] }},'',
+            {% end %} 
+            ]
+    },
+    xAxis : [
+        {
+            type : 'value',
+            show:false,
+            scale:true,
+            axisLabel : {
+                formatter: '{value}'
+            },
+            max:{{ max([max(i,key=lambda x:x[0])[0] for i in label_location])*1.05 }},
+            min:{{ min([min(i,key=lambda x:x[0])[0] for i in label_location])-5 }}
+        }
+    ],
+    yAxis : [
+        {
+            type : 'value',
+            show:false,
+            scale:true,
+            axisLabel : {
+                formatter: '{value}'
+            },
+            max:{{ max([max(i,key=lambda x:x[1])[1] for i in label_location])*1.05 }},
+            min:{{ min([min(i,key=lambda x:x[1])[1] for i in label_location])-5 }}
+        }
+    ],
+    grid : [{
+        borderWidth:0
+    }],
+    series : [
+        {% for i in range(len(label_location)) %}
+        {
+            name:{{ uniq_ele[i]}},
+            type:'scatter',
+            data: {{label_location[i]}},
+            symbol:'circle'
+        },
+        {% end %}
+    ]
+};
+
+// 为echarts对象加载数据 
+            myChart.setOption(option);
+        }
+    );
+    </script>
+
+</div>
+{% end %}
+
+{% block script %}
+<script type="text/javascript">
+</script>
+{% end %}

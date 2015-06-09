@@ -1,0 +1,27 @@
+{% extends "main.html" %}
+
+{% block header %}
+<title>Something Error</title>
+<style>
+#main {
+    width: 600px;
+}
+
+.text-error{
+    font-size: 20px;
+}
+
+</style>
+{% end %}
+
+{% block content %}
+<div class="container" id="main">
+    <p class="text-error">{{ error_info }}</p>
+    <p class="text-info"><a href="javascript :;" onClick="javascript :history.back(-1);"><-&nbsp;go back</a></p>
+</div>
+{% end %}
+
+{% block script %}
+<script type="text/javascript">
+</script>
+{% end %}

@@ -1,0 +1,39 @@
+{% extends "main.html" %}
+
+{% block header %}
+<title>Data Format</title>
+<style>
+#main {
+    width: 600px;
+}
+
+.text-error{
+    font-size: 20px;
+}
+
+</style>
+{% end %}
+
+{% block content %}
+<div class="container" id="main">
+    <h2><p class="text-info">Type</p></h2>
+    <p>
+        <h4>the data you upload is created by Matlab or scipy.io.savemat() in Python,normally as <code>xxx.mat</code></h4></p>
+    <h2><p class="text-info">Format</p></h2>
+    <p>
+        <h4>including <code>x</code>,<code>y</code>, it calls for <code>location</code>when finding <em><strong>statistical features</strong></em>,such as 
+    	<p><pre class="prettyprint Lang-py">scipy.io.savemat("whole_data.mat",{"x": x, "y": y,"location":location})</pre></h4></p>
+    </p>
+    <h2><p class="text-info">Detail</p></h2>
+    <p>
+        <h4><code>x</code>: features of your data,an array of [0..count of your data,0..count of feature]</h4>
+        <h4><code>y</code>: labels of your data,an array of [0..count of your data],and the labels should be <em><strong>numbers</strong></em></h4>
+        <h4><code>location</code>: location of each pixel,an array of [0..count of your data,[x_position,y_position]</h4>
+    </p>
+</div>
+{% end %}
+
+{% block script %}
+<script type="text/javascript">
+</script>
+{% end %}

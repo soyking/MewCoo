@@ -1,0 +1,399 @@
+{% extends "main.html" %}
+
+{% block header %}
+<title>Classification Result</title>
+<style>
+#main {
+    width: 800px;
+}
+
+#main td{
+    height:50px;
+}
+
+#main input{
+    border:1px;
+    border-top-style:none;
+    border-left-style:none;
+    border-right-style:none;
+    background-color: rgba(245, 244, 244, 0.82);
+}
+
+/*body {
+    padding-top: 60px;
+}
+*/
+.result{
+    font-size: 20px;
+}
+
+.description{
+    padding-left: 100px;
+}
+
+</style>
+{% end %}
+
+{% block content %}
+<div class="container" id="main">
+    <h2><p class="text-info">Classification Result</p></h2>
+    <hr>
+    <div class="description">
+    <table width="300">
+        <tr>
+        <td><span class="text-info"><strong>Classify Method</strong></span></td>
+        <td><input type="text" value="{{ method }}" size=10 /></TD>
+        </tr>
+        <tr>
+        <td><span class="text-info"><strong>Kernel Method</strong></span></td>
+        <td><input type="text" value="{{ kernel }}" size=10 /></td>
+        </tr>
+        {% if method=="SVM" %}
+        <tr>
+        <td><span class="text-info"><strong>Parameter C</strong></span></td>
+        <td><input type="text" value="{{ C }}" size=10 /></td>
+        </tr>
+        {% if kernel=="RBF" %}
+        <tr>
+        <td><span class="text-info"><strong>Parameter gamma</strong></span></td>
+        <td><input type="text" value="{{ gamma }}" size=10 /></td>
+        </tr>
+        {% end %}
+        {% end %}
+        <tr>
+        <td><span class="text-info"><strong>Overall Accuracy</strong></span></td>
+        <td><input type="text" value="{{ "%.2f%%"%OA }}" size=10 /></td>
+        </tr>
+        <tr>
+        <td><span class="text-info"><strong>Average Accuracy</strong></span></td>
+        <td><input type="text" value="{{ "%.2f%%"%AA }}" size=10 /></td>
+        </tr>
+        <tr>
+        <td><span class="text-info"><strong>Cohen's Kappa</strong></span></td>
+        <td><input type="text" value="{{ "%.2f%%"%kappa }}" size=10 /></td>
+        </tr>
+    </table>
+    <hr>
+    </div>
+
+    <h2><p class="text-info">Accuracy of Each Label</p><hr></h2>
+    <div id="label_acc" style="height:600px"></div>
+
+    <h2><p class="text-info" >Spacial Distribution</p><hr></h2>
+    <div id="y_te" style="height:600px"></div>
+    <div id="tr" style="height:600px"></div>
+    <hr>
+    <h2><p><span  class="text-info">Download Result&nbsp;&nbsp;:&nbsp;&nbsp;</span><a href="{{ result_filename }}" style="color:black" id="result_filename">result.mat</a>&nbsp;&nbsp;&nbsp;<a href="/format/r"><span style="font-size:15px">see data format?</span></a></p></h2>
+
+</div>
+{% end %}
+
+{% block script %}
+<!-- ECharts单文件引入 -->
+    <script src="{{ static_url("echarts/build/dist/echarts.js") }}"></script>
+    <script type="text/javascript">
+    // 路径配置
+    require.config({
+        paths: {
+            echarts: '{{ static_url("echarts/build/dist") }}'
+        }
+    });
+
+    // 使用
+    require(
+        [
+            'echarts',
+            'echarts/chart/line', // 使用柱状图就加载bar模块，按需加载
+            'echarts/chart/bar'
+        ],
+        function(ec) {
+            // 基于准备好的dom，初始化echarts图表
+            var myChart = ec.init(document.getElementById('label_acc'));
+
+            var option = {
+                // backgroundColor: 'rgba(255,255,255,255)',
+                title: {
+                    text: ""
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                toolbox: {
+                    show: true,
+                    feature: {
+                        mark: {
+                            show: true
+                        },
+                        dataView: {
+                            show: true,
+                            readOnly: false
+                        },
+                        magicType: {
+                            show: true,
+                            type: ['line', 'bar']
+                        },
+                        restore: {
+                            show: true
+                        },
+                        saveAsImage: {
+                            show: true
+                        }
+                    }
+                },
+                calculable: true,
+                xAxis: [{
+                    type: 'category',
+                    boundaryGap: false,
+                    data: {{ [label for label in label_accuracy] }} 
+                }],
+                yAxis: [{
+                    type: 'value',
+                    axisLabel: {
+                        formatter: '{value} '
+                    }
+                }],
+                series: [{
+                    name: '正确率',
+                    type: 'line',
+                    data: {{ [round(label_accuracy[label]*100,2) for label in label_accuracy] }},
+                    markPoint: {
+                        data: [{
+                            type: 'max',
+                            name: '最大值'
+                        }, {
+                            type: 'min',
+                            name: '最小值'
+                        }]
+                    },
+                    markLine : {
+                        data : [
+                            {type : 'average', name: '平均值'}
+                        ]
+                    }
+                }]
+            };
+
+            // 为echarts对象加载数据 
+            myChart.setOption(option);
+        }
+    );
+    </script>
+
+    <script type="text/javascript">
+    // 路径配置
+    require.config({
+        paths: {
+            echarts: '{{ static_url("echarts/build/dist") }}'
+        }
+    });
+
+    // 使用
+    require(
+        [
+            'echarts',
+            'echarts/chart/line', // 使用柱状图就加载bar模块，按需加载
+            'echarts/chart/bar',
+            'echarts/chart/scatter'
+        ],
+        function(ec) {
+            // 基于准备好的dom，初始化echarts图表
+            var myChart = ec.init(document.getElementById('y_te'));
+
+            var option = {
+    title : {
+        text: 'Original Data'
+    },
+    tooltip : {
+        trigger: 'axis',
+        showDelay : 0,
+        axisPointer:{
+            show: true,
+            type : 'cross',
+            lineStyle: {
+                type : 'dashed',
+                width : 1
+            }
+        }
+    },
+    toolbox: {
+        show : true,
+        feature : {
+            mark : {show: true},
+            dataZoom : {show: true},
+            dataView : {show: true, readOnly: false},
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+    }, 
+    legend: {
+        x:'center',
+        data:[
+            {% for i in range(0,len(uniq_ele),8) %}
+            {{ str(uniq_ele[i:i+8])[1:-1] }},'',
+            {% end %} 
+            ]
+    },
+    xAxis : [
+        {
+            type : 'value',
+            show:false,
+            scale:true,
+            axisLabel : {
+                formatter: '{value}'
+            },
+            max:{{ max([max(i,key=lambda x:x[0])[0] for i in y_te_location])*1.05 }},
+            min:{{ min([min(i,key=lambda x:x[0])[0] for i in y_te_location])-5 }}
+        }
+    ],
+    yAxis : [
+        {
+            type : 'value',
+            show:false,
+            scale:true,
+            axisLabel : {
+                formatter: '{value}'
+            },
+            max:{{ max([max(i,key=lambda x:x[1])[1] for i in y_te_location])*1.05 }},
+            min:{{ min([min(i,key=lambda x:x[1])[1] for i in y_te_location])-5 }}
+        }
+    ],
+    grid : [{
+        borderWidth:0
+    }],
+    series : [
+        {% for i in range(len(y_te_location)) %}
+        {
+            name:{{ uniq_ele[i]}},
+            type:'scatter',
+            data: {{y_te_location[i]}},
+            symbol:'circle'
+        },
+        {% end %}
+    ]
+};
+
+// 为echarts对象加载数据 
+            myChart.setOption(option);
+        }
+    );
+    </script>
+
+    <script type="text/javascript">
+    // 路径配置
+    require.config({
+        paths: {
+            echarts: '{{ static_url("echarts/build/dist") }}'
+        }
+    });
+
+    // 使用
+    require(
+        [
+            'echarts',
+            'echarts/chart/line', // 使用柱状图就加载bar模块，按需加载
+            'echarts/chart/bar',
+            'echarts/chart/scatter'
+        ],
+        function(ec) {
+            // 基于准备好的dom，初始化echarts图表
+            var myChart = ec.init(document.getElementById('tr'));
+
+            var option = {
+    title : {
+        text: 'Classification Result\nAccuracy: {{ "%.2f%%"%OA }}'
+    },
+    tooltip : {
+        trigger: 'axis',
+        showDelay : 0,
+        axisPointer:{
+            show: true,
+            type : 'cross',
+            lineStyle: {
+                type : 'dashed',
+                width : 1
+            }
+        }
+    },
+    toolbox: {
+        show : true,
+        feature : {
+            mark : {show: true},
+            dataZoom : {show: true},
+            dataView : {show: true, readOnly: false},
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+    }, 
+    legend: {
+        x:'center',
+        data:[
+            {% for i in range(0,len(uniq_ele),8) %}
+            {{ str(uniq_ele[i:i+8])[1:-1] }},'',
+            {% end %} 
+            ]
+    },
+    xAxis : [
+        {
+            type : 'value',
+            show:false,
+            scale:true,
+            axisLabel : {
+                formatter: '{value}'
+            },
+            max:{{ max([max(i,key=lambda x:x[0])[0] for i in t_te_location if i!=[]])*1.05 }},
+            min:{{ min([min(i,key=lambda x:x[0])[0] for i in t_te_location if i!=[]])-5 }}
+        }
+    ],
+    yAxis : [
+        {
+            type : 'value',
+            show:false,
+            scale:true,
+            axisLabel : {
+                formatter: '{value}'
+            },
+            max:{{ max([max(i,key=lambda x:x[1])[1] for i in t_te_location if i!=[]] )*1.05 }},
+            min:{{ min([min(i,key=lambda x:x[1])[1] for i in t_te_location if i!=[]] )-5 }}
+        }
+    ],
+    grid : [{
+        borderWidth:0
+    }],
+    series : [
+        {% for i in range(len(t_te_location)) %}
+        {
+            name:{{ uniq_ele[i]}},
+            type:'scatter',
+            data: {{t_te_location[i]}},
+            symbol:'circle'
+        },
+        {% end %}
+    ]
+};
+
+// 为echarts对象加载数据 
+            myChart.setOption(option);
+        }
+    );
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            document.result_filename = $('#result_filename').attr("href");
+            console.log(document.result_filename)
+            //get progress in 1 sec
+            setTimeout(delete_result_file, 100);
+
+            function delete_result_file() {
+                var host = 'ws://localhost:8989/delete?filename=' + document.result_filename;
+    
+                var websocket = new WebSocket(host);
+                
+                websocket.onopen = function (evt) { };
+                websocket.onmessage = function(evt) { 
+                };
+                websocket.onerror = function (evt) { };
+                        }
+        });
+    </script>
+{% end %}

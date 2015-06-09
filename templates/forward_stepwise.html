@@ -1,0 +1,65 @@
+{% extends "main.html" %}
+
+{% block header %}
+<title>Forward Stepwise</title>
+<script src="{{ static_url("bootstrap.file-input.js")}}"></script>
+<style>
+#main {
+    width: 600px;
+}
+/*
+body {
+    padding-top: 125px;
+}*/
+
+.starter-template {
+    padding: 40px 15px;
+    text-align: center;
+}
+
+.btn {
+    width: 150px;
+    text-align: left;
+}
+
+</style>
+{% end %}
+
+{% block content %}
+<div class="container" id="main">
+    <h2><p class="text-info">Select Features by Forward Stepwise!</p></h2>
+    <hr>
+    <form method=post enctype="multipart/form-data" action="/forward_stepwise">
+        <p style="font-size:20px"><strong>Data File:</strong></p>
+        <p>
+            <input type="file" name="forward_stepwise_data" title="Upload Your Data" />&nbsp;&nbsp;<a href="/format/s"><span style="font-size:15px">see data format?</span></a>
+        </p>
+        <p>
+            <table width="">
+                <tr>
+                    <td><span class="text-info"><strong>Number of Features</strong></span></td>
+                    <td><input type="text" name="number_of_features" value="1" size=10/></td>
+                </tr>
+            </table>
+        </p>
+        <input type="submit" class="btn btn-primary" value="Calculate it!" id="submit"/>
+    </form>
+</div>
+{% end %}
+
+{% block script %}
+<script type="text/javascript">
+$(document).ready(function() {
+    $('input[type=file]').bootstrapFileInput();
+    $('.file-inputs').bootstrapFileInput();
+});
+
+function show(id,flag){
+    if (flag) {
+        document.getElementById(id).style.display = "inline";
+    } else {
+        document.getElementById(id).style.display = "none";
+    }
+}
+</script>
+{% end %}

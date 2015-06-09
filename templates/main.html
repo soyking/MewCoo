@@ -1,0 +1,127 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="{{ static_url("bootstrap/css/bootstrap.css") }}">
+    <script src="{{ static_url("jquery-1.11.2.js")}}"></script>
+    <script src="{{ static_url("bootstrap/js/bootstrap.js")}}"></script>
+    <style>
+
+	.navbar-inverse {
+	    background-color: #337ab7;
+	}
+
+	.navbar-inverse .navbar-brand {
+	    color: white;
+	}
+
+	.navbar-inverse .navbar-nav>.active>a {
+	    background-color: #337ab7;
+	}
+
+    .navbar-inverse .navbar-nav>.active>a:focus,
+    .navbar-inverse .navbar-nav>.active>a:hover{
+        color: white;
+        background-color: #66CCFF;
+    }
+
+    .navbar-inverse .navbar-nav > li > a {
+        color: #FFFFFF;
+    }
+
+    .navbar-inverse .navbar-nav > .open > a, .navbar-inverse .navbar-nav > .open > a:hover, .navbar-inverse .navbar-nav > .open > a:focus {
+        background-color: #337ab7;
+    }
+
+	.btn-default {
+	  color: white;
+	  background-color: #337ABA;
+	}
+
+    .navbar > .container .navbar-brand, .navbar > .container-fluid .navbar-brand {
+        margin-left: 155px;
+    }
+
+    .jumbotron{
+        width:800px;
+        padding-top: 125px;
+        padding-bottom: 0px;
+        margin-left: auto;
+        margin-right: auto;
+        background-color: rgba(245, 244, 244, 0.82);
+    }
+
+    #main{
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #footer{
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .jumbotron{
+        position: relative;   /*重要！保证footer是相对于wapper位置绝对*/
+        height: auto;          /* 保证页面能撑开浏览器高度时显示正常*/
+        min-height: 100%;
+    }
+    #footer{
+        width: 800px;
+        position: absolute;  
+        bottom: 0; /* 关键 */
+        left:0; /* IE下一定要记得 */
+        height: 60px;         /* footer的高度一定要是固定值*/
+    }
+    #main{
+        padding-bottom: 60px; /*重要！给footer预留的空间*/
+    }
+	</style>
+    {% block header %}{% end %}
+</head>
+
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/"><strong>MewCoo&nbsp;&nbsp;</strong></a>
+            </div>
+            <div id="navbar" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="/">Start</a></li>
+                    <li class="active"><a href="/stat_feature">Statistical Feature</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Toolkit<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="/soft_margin">Best Soft Margin of SVM</a></li>
+                            <li><a href="/rbf_gamma">Best Gamma of RBF Kernel</a></li>
+                            <li><a href="/forward_stepwise">Forward Stepwise</a></li>
+                            <li><a href="/knn">K-nearest Neighbors</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Data Format<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="/format/c">For Classification</a></li>
+                            <li><a href="/format/r">For Result</a></li>
+                            <li><a href="/format/s">For Others</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="jumbotron">
+    {% block content %}{% end %}
+    
+    <footer id="footer">
+        <div>
+        <p/>
+            <center><span class="text-muted">A Hyperspectral Image Classification Online Tool ,Created by <a href=mailto:soyking@outlook.com>Soyking</a>&nbsp;2015</span></center>
+        </div>
+    </footer>
+    </div>
+</body>
+
+{% block script %}{% end %}
+
+</html>
