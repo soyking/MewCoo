@@ -15,6 +15,14 @@ Webpage:
 - [Echarts](https://github.com/ecomfe/echarts)
 - [JQuery](https://github.com/jquery/jquery)
 
+## How to Run
+
+in main folder :
+```python
+python multi_classifier.py
+```
+defalut port : ```8989```
+
 ## URL Statement
 
 - <code>/</code>
