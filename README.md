@@ -17,24 +17,33 @@ Webpage:
 
 ## URL Statement
 
-- /
+- <code>/</code>
 </br>After inputing image data and selecting classification method (multinomial logistic regression[MLR] or support vector machine[SVM]), you could get classification result reported by text and graphs.And you could select the parameters and the indices of the feature you focus on.
 
-- /stat_feature
+- <code>/stat_feature</code>
 </br>Getting original data statistical feature, such as average, variance.
 
-- /rbf_gamma
+- <code>/rbf_gamma</code>
 </br>Trying to find the best gamma of RBF kernel funciton.
 
-- /soft_margin
+- <code>/soft_margin</code>
 </br>Trying to find the best soft margin of SVM algorithm.
 
-- /forward_stepwise
+- <code>/forward_stepwise</code>
 </br>Selecting feature indices by forward stepwise.
 
-- /knn
+- <code>/knn</code>
 </br>Optimizing classification result by k-nearest neighbors.
 
-- /format
+- <code>/format</code>
 </br>Data format.
 
+## Testing Data
+
+It's in <code>test</code> folder
+
+- all_data for <code>/</code>
+- whole_data for <code>/stat_feature</code>
+- cv_data for <code>/rbf_gamma</code> and <code>/soft_margin</code>
+- fs_data for <code>/forward_stepwise</code>
+- result for <code>/knn</code>
