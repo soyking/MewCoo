@@ -65,6 +65,8 @@ class RBFGammaTask(threading.Thread):
         for gamma in np.arange(self.min_g, self.max_g, self.step):
             if self.running == 0:
                 break
+            if gamma == 0.0:
+                gamma = "auto"
             clf = svm.SVC(kernel="rbf", gamma=gamma, C=self.C)
             score = round(cross_validation.cross_val_score(
                 clf, self.x, self.y, cv=5).mean() * 100, 2)
