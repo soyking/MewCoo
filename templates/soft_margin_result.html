@@ -67,7 +67,7 @@
     </center>
 </div>
 {% end %} {% block script %}
-<script src="{{ static_url("echarts/build/dist/echarts.js") }}"></script>
+<script src="http://echarts.baidu.com/build/dist/echarts.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
     document.session = $('#session').val();
@@ -148,7 +148,7 @@ function draw(axis, acc,acc_min,acc_max) {
 
     require.config({
         paths: {
-            echarts: '{{ static_url("echarts/build/dist") }}'
+            echarts: 'http://echarts.baidu.com/build/dist'
         }
     });
 
